@@ -1,1 +1,197 @@
-<p>orders works!</p>
+<div class="container">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <h1>Comandas de Cocina</h1>
+      <span class="subtitle">Gestiona los pedidos pendientes</span>
+    </div>
+    <div class="header-filters">
+      <button class="filter-btn active" data-filter="all">Todas (12)</button>
+      <button class="filter-btn" data-filter="pending">Pendientes (5)</button>
+      <button class="filter-btn" data-filter="preparing">En Preparación (4)</button>
+      <button class="filter-btn" data-filter="ready">Listos (3)</button>
+    </div>
+  </header>
+
+  <!-- Comandas Grid -->
+  <main class="comandas-grid">
+    @for(order of kOrders$ | async; track order.id){
+        <div class="comanda-card preparing" data-status="preparing">
+          <div class="comanda-header">
+            <span class="mesa">Mesa {{order.mesaid}}</span>
+            <span class="tiempo">{{order.fechahora | date:'fullDate'}}</span>
+          </div>
+
+      @for(item of order.itempedidos; track item.id){
+        <div class="comanda-items" style="display: flex; justify-content: space-between;">
+          <div class="item">
+           <span class="cantidad">{{item.cantidad}}</span>
+           <span class="nombre">{{item.nombreProducto}}</span>
+          </div>
+          <div>
+          @if(item.estado === "Listo" || item.estado == "Servido"){
+             <span class="status-badge pending">{{item.estado}}</span>
+            }@else{
+             <span class="status-badge pending" (click)="changeStateItem(item.id)">{{item.estado}}</span>
+              }
+          </div>
+        </div>
+      }
+        <div class="comanda-footer">
+          <span class="status-badge pending">{{order.estado}}</span>
+          <span class="status-badge cancel">Cancelar</span>
+
+          <!-- <button class="action-btn">Iniciar</button> -->
+        </div>
+        <div class="comanda-pin"></div>
+        </div>
+
+    }
+
+    <!--  Comanda Pendiente -->
+    <!-- <div class="comanda-card pending" data-status="pending"> -->
+    <!--   <div class="comanda-header"> -->
+    <!--     <span class="mesa">Mesa 5</span> -->
+    <!--     <span class="tiempo">12:45 PM</span> -->
+    <!--   </div> -->
+    <!--   <div class="comanda-items"> -->
+    <!--     <div class="item"> -->
+    <!--       <span class="cantidad">2x</span> -->
+    <!--       <span class="nombre">Hamburguesa Clásica</span> -->
+    <!--     </div> -->
+    <!--     <div class="item"> -->
+    <!--       <span class="cantidad">1x</span> -->
+    <!--       <span class="nombre">Papas Fritas</span> -->
+    <!--     </div> -->
+    <!--     <div class="item"> -->
+    <!--       <span class="cantidad">1x</span> -->
+    <!--       <span class="nombre">Coca Cola</span> -->
+    <!--     </div> -->
+    <!--   </div> -->
+    <!--   <div class="comanda-footer"> -->
+    <!--     <span class="status-badge pending">Pendiente</span> -->
+    <!--     <button class="action-btn">Iniciar</button> -->
+    <!--   </div> -->
+    <!--   <div class="comanda-pin"></div> -->
+    <!-- </div> -->
+    <!---->
+    <!-- <!-- Comanda En Preparación --> -->
+    <!-- <div class="comanda-card preparing" data-status="preparing"> -->
+    <!--   <div class="comanda-header"> -->
+    <!--     <span class="mesa">Mesa 2</span> -->
+    <!--     <span class="tiempo">12:30 PM</span> -->
+    <!--   </div> -->
+    <!--   <div class="comanda-items"> -->
+    <!--     <div class="item"> -->
+    <!--       <span class="cantidad">1x</span> -->
+    <!--       <span class="nombre">Pizza Margherita</span> -->
+    <!--     </div> -->
+    <!--     <div class="item"> -->
+    <!--       <span class="cantidad">2x</span> -->
+    <!--       <span class="nombre">Ensalada César</span> -->
+    <!--     </div> -->
+    <!--   </div> -->
+    <!--   <div class="comanda-notes"> -->
+    <!--     <small>Nota: Sin cebolla en la ensalada</small> -->
+    <!--   </div> -->
+    <!--   <div class="comanda-footer"> -->
+    <!--     <span class="status-badge preparing">En Preparación</span> -->
+    <!--     <button class="action-btn">Marcar Listo</button> -->
+    <!--   </div> -->
+    <!--   <div class="comanda-pin"></div> -->
+    <!-- </div> -->
+    <!---->
+    <!-- <!-- Comanda Lista --> -->
+    <!-- <div class="comanda-card ready" data-status="ready"> -->
+    <!--   <div class="comanda-header"> -->
+    <!--     <span class="mesa">Mesa 8</span> -->
+    <!--     <span class="tiempo">12:15 PM</span> -->
+    <!--   </div> -->
+    <!--   <div class="comanda-items"> -->
+    <!--     <div class="item"> -->
+    <!--       <span class="cantidad">1x</span> -->
+    <!--       <span class="nombre">Pasta Carbonara</span> -->
+    <!--     </div> -->
+    <!--     <div class="item"> -->
+    <!--       <span class="cantidad">1x</span> -->
+    <!--       <span class="nombre">Vino Tinto</span> -->
+    <!--     </div> -->
+    <!--   </div> -->
+    <!--   <div class="comanda-footer"> -->
+    <!--     <span class="status-badge ready">Listo para Servir</span> -->
+    <!--     <button class="action-btn">Servido</button> -->
+    <!--   </div> -->
+    <!--   <div class="comanda-pin"></div> -->
+    <!-- </div> -->
+    <!---->
+    <!-- <!-- Más comandas --> -->
+    <!-- <div class="comanda-card pending" data-status="pending"> -->
+    <!--   <div class="comanda-header"> -->
+    <!--     <span class="mesa">Mesa 12</span> -->
+    <!--     <span class="tiempo">12:50 PM</span> -->
+    <!--   </div> -->
+    <!--   <div class="comanda-items"> -->
+    <!--     <div class="item"> -->
+    <!--       <span class="cantidad">3x</span> -->
+    <!--       <span class="nombre">Tacos al Pastor</span> -->
+    <!--     </div> -->
+    <!--     <div class="item"> -->
+    <!--       <span class="cantidad">2x</span> -->
+    <!--       <span class="nombre">Agua de Horchata</span> -->
+    <!--     </div> -->
+    <!--   </div> -->
+    <!--   <div class="comanda-footer"> -->
+    <!--     <span class="status-badge pending">Pendiente</span> -->
+    <!--     <button class="action-btn">Iniciar</button> -->
+    <!--   </div> -->
+    <!--   <div class="comanda-pin"></div> -->
+    <!-- </div> -->
+    <!---->
+    <!-- <div class="comanda-card preparing" data-status="preparing"> -->
+    <!--   <div class="comanda-header"> -->
+    <!--     <span class="mesa">Mesa 7</span> -->
+    <!--     <span class="tiempo">12:35 PM</span> -->
+    <!--   </div> -->
+    <!--   <div class="comanda-items"> -->
+    <!--     <div class="item"> -->
+    <!--       <span class="cantidad">2x</span> -->
+    <!--       <span class="nombre">Sopa de Tortilla</span> -->
+    <!--     </div> -->
+    <!--     <div class="item"> -->
+    <!--       <span class="cantidad">1x</span> -->
+    <!--       <span class="nombre">Quesadilla</span> -->
+    <!--     </div> -->
+    <!--   </div> -->
+    <!--   <div class="comanda-footer"> -->
+    <!--     <span class="status-badge preparing">En Preparación</span> -->
+    <!--     <button class="action-btn">Marcar Listo</button> -->
+    <!--   </div> -->
+    <!--   <div class="comanda-pin"></div> -->
+    <!-- </div> -->
+    <!---->
+    <!-- <div class="comanda-card ready" data-status="ready"> -->
+    <!--   <div class="comanda-header"> -->
+    <!--     <span class="mesa">Mesa 3</span> -->
+    <!--     <span class="tiempo">12:20 PM</span> -->
+    <!--   </div> -->
+    <!--   <div class="comanda-items"> -->
+    <!--     <div class="item"> -->
+    <!--       <span class="cantidad">1x</span> -->
+    <!--       <span class="nombre">Filete de Res</span> -->
+    <!--     </div> -->
+    <!--     <div class="item"> -->
+    <!--       <span class="cantidad">1x</span> -->
+    <!--       <span class="nombre">Puré de Papa</span> -->
+    <!--     </div> -->
+    <!--   </div> -->
+    <!--   <div class="comanda-notes"> -->
+    <!--     <small>Nota: Término medio</small> -->
+    <!--   </div> -->
+    <!--   <div class="comanda-footer"> -->
+    <!--     <span class="status-badge ready">Listo para Servir</span> -->
+    <!--     <button class="action-btn">Servido</button> -->
+    <!--   </div> -->
+    <!--   <div class="comanda-pin"></div> -->
+    <!-- </div> -->
+  </main>
+</div>

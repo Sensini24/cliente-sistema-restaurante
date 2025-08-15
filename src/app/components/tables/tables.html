@@ -1,1 +1,76 @@
-<p>tables works!</p>
+<main class="container">
+  <section class="card">
+    <div class="card-header">
+      <h2>Estado de mesas</h2>
+    </div>
+
+    <div class="table-legend" role="list">
+      <span role="listitem"><span class="dot available"></span> Libre</span>
+      <span role="listitem"><span class="dot busy"></span> Ocupada</span>
+      <span role="listitem"><span class="dot paying"></span> En Limpieza</span>
+    </div>
+
+
+    <div class="table-grid">
+      @for(table of tables$ | async; track table.id){
+
+      @if(table.estado === "Ocupada"){
+      <label class="table is-busy" for="mesa-{{table.id}}">
+        {{table.numero}}
+      </label>
+      }
+      @else if(table.estado === "En Limpieza"){
+      <label class="table is-paying" for="mesa-{{table.id}}">
+        {{table.numero}}
+      </label>
+      }
+      @else {
+      <!-- Este es el estado por defecto para "Libre" -->
+      <label class="table is-available" for="mesa-{{table.id}}">
+        {{table.numero}}
+      </label>
+      }
+      }
+    </div>
+
+
+
+    <!-- <input class="sr-only" type="radio" name="mesa" id="mesa-1" /> -->
+    <!-- <label class="table is-busy" for="mesa-1">1</label> -->
+    <!---->
+    <!-- <input class="sr-only" type="radio" name="mesa" id="mesa-2" checked /> -->
+    <!-- <label class="table" for="mesa-2" aria-current="true">2</label> -->
+    <!---->
+    <!-- <input class="sr-only" type="radio" name="mesa" id="mesa-3" /> -->
+    <!-- <label class="table" for="mesa-3">3</label> -->
+    <!---->
+    <!-- <input class="sr-only" type="radio" name="mesa" id="mesa-4" /> -->
+    <!-- <label class="table is-paying" for="mesa-4">4</label> -->
+    <!---->
+    <!-- <input class="sr-only" type="radio" name="mesa" id="mesa-5" /> -->
+    <!-- <label class="table is-busy" for="mesa-5">5</label> -->
+    <!---->
+    <!-- <input class="sr-only" type="radio" name="mesa" id="mesa-6" /> -->
+    <!-- <label class="table" for="mesa-6">6</label> -->
+    <!---->
+    <!-- <input class="sr-only" type="radio" name="mesa" id="mesa-7" /> -->
+    <!-- <label class="table" for="mesa-7">7</label> -->
+    <!---->
+    <!-- <input class="sr-only" type="radio" name="mesa" id="mesa-8" /> -->
+    <!-- <label class="table" for="mesa-8">8</label> -->
+    <!---->
+    <!-- <input class="sr-only" type="radio" name="mesa" id="mesa-9" /> -->
+    <!-- <label class="table is-busy" for="mesa-9">9</label> -->
+    <!---->
+    <!-- <input class="sr-only" type="radio" name="mesa" id="mesa-10" /> -->
+    <!-- <label class="table" for="mesa-10">10</label> -->
+    <!---->
+    <!-- <input class="sr-only" type="radio" name="mesa" id="mesa-11" /> -->
+    <!-- <label class="table" for="mesa-11">11</label> -->
+    <!---->
+    <!-- <input class="sr-only" type="radio" name="mesa" id="mesa-12" /> -->
+    <!-- <label class="table" for="mesa-12">12</label> -->
+
+    <p class="hint">Sugerencia: esta selección puede enlazar a la pantalla de Comandas para la mesa elegida.</p>
+  </section>
+</main>

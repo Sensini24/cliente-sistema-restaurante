@@ -1,0 +1,250 @@
+.title {
+  margin: 0 0 6px;
+  font-size: 22px;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--muted);
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin: 14px 0 0;
+  flex-wrap: wrap;
+}
+
+.tab {
+  display: inline-grid;
+  place-items: center;
+  height: 36px;
+  padding: 0 14px;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  background: #fffdf8;
+  color: inherit;
+  text-decoration: none;
+}
+
+
+
+/* Layout */
+.container {
+  max-width: 100%;
+  margin: 16px auto 24px;
+  padding: 0 16px 24px;
+  /* Se modifica para crear dos columnas de igual tamaño */
+}
+
+.board {
+  display: grid;
+  width: 100%;
+  gap: 8px;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.card {
+  width: 100%;
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+
+.order-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--line);
+}
+
+.order-title {
+  margin: 0;
+  font-size: 18px;
+}
+
+.order-sub {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.status {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  display: inline-grid;
+  place-items: center;
+  height: 24px;
+  padding: 0 10px;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  background: #fffdf8;
+  font-size: 12px;
+}
+
+.tag.pending {
+  background: #fff2d6;
+}
+
+.tag.partial {
+  background: #fff8e8;
+}
+
+.tag.ready {
+  background: #e6f0ff;
+}
+
+.tag.served {
+  background: #e5f8ee;
+}
+
+.tag.paid {
+  background: #f7e2d8;
+  border-color: #b44c1f;
+}
+
+
+
+/* Cuerpo del pedido */
+.order-body {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.item {
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: #fffdf8;
+  padding: 8px 10px;
+}
+
+.qty-box {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 30px;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  font-weight: 700;
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+}
+
+.info .name {
+  font-weight: 600;
+}
+
+.info .note {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.subtotal {
+  font-weight: 700;
+}
+
+.item-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.btn {
+  --bg: #fffdf8;
+  --bd: var(--line);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 2px solid var(--bd);
+  background: var(--bg);
+  color: var(--ink);
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.btn.ghost {
+  background: #fffdf8;
+}
+
+.btn.outline {
+  background: transparent;
+}
+
+.btn.tiny {
+  height: 28px;
+  padding: 0 10px;
+  font-size: 13px;
+}
+
+.btn.pay {
+  --bg: var(--primary);
+  color: #fffdf8;
+}
+
+
+/* Footer del pedido */
+.order-foot {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 2px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.sum {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sum strong {
+  font-size: 18px;
+}
+
+/* Accesibilidad */
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+
+@media (max-width: 900px) {
+  .board {
+    transform: scale(0.8);
+    gap: 8px;
+    grid-template-columns: repeat(1, 1fr);
+    /* Reduce el tamaño al 80% */
+    /* O puedes usar:
+       transform: translate(10px, 20px);  Mueve el elemento */
+  }
+}

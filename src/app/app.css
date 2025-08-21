@@ -40,6 +40,7 @@
   height: 100vh;
 }
 
+
 .brand {
   display: grid;
   place-items: center;
@@ -118,6 +119,10 @@
 
 .nav-item:hover::after {
   opacity: 1;
+}
+
+.nav-item.active {
+  background-color: #EF6B2E;
 }
 
 /* Badge */

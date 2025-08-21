@@ -1,11 +1,12 @@
 <div class="app">
   <aside class="sidebar" aria-label="Barra lateral">
-    <a class="brand" href="../mesas/index.html" aria-label="Inicio">
+    <a class="brand" href="#" aria-label="Inicio">
       <span class="brand-mark" aria-hidden="true"></span>
     </a>
 
     <nav class="nav">
-      <a class="nav-item" routerLink="tables" data-label="Mesas">
+      <a class="nav-item" routerLink="/tables" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+        data-label="Mesas">
         <span class="icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none">
             <rect x="3" y="4" width="18" height="6" rx="1" stroke="currentColor" stroke-width="1.8" />
@@ -15,7 +16,8 @@
         <span class="sr-only">Mesas</span>
       </a>
 
-      <a class="nav-item" routerLink="dishes" data-label="Catálogo">
+      <a class="nav-item" routerLink="/dishes" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+        data-label="Catálogo">
         <span class="icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none">
             <path d="M4 5h16M4 12h16M4 19h16" stroke="currentColor" stroke-width="1.8" />
@@ -24,7 +26,7 @@
         <span class="sr-only">Catálogo</span>
       </a>
 
-      <a class="nav-item" routerLink="orders" data-label="Comandas">
+      <a class="nav-item" routerLink="orders" routerLinkActive="active" data-label=" Comandas">
         <span class="icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none">
             <rect x="4" y="3" width="16" height="18" rx="2" stroke="currentColor" stroke-width="1.8" />
@@ -34,7 +36,7 @@
         <span class="sr-only">Comanda</span>
       </a>
 
-      <a class="nav-item" routerLink="newOrder" data-label="Nueva Orden">
+      <a class="nav-item" routerLink="/orders-waiter" routerLinkActive="active" data-label="Pedidos">
         <span class="icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none">
             <path d="M7 7h13M7 12h13M7 17h13" stroke="currentColor" stroke-width="1.8" />
@@ -46,7 +48,7 @@
         <span class="sr-only">Pedidos</span>
       </a>
 
-      <a class="nav-item" routerLink="notifications" data-label="Notificaciones">
+      <a class="nav-item" routerLink="notifications" routerLinkActive="active" data-label="Notificaciones">
         <span class="icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none">
             <path d="M5 17h14l-1.2-2.4A7 7 0 0 1 16.8 7 4.8 4.8 0 1 0 7.2 7c0 1.8-.7 3.5-2 4.8z" stroke="currentColor"
@@ -60,7 +62,7 @@
 
       <div class="spacer"></div>
 
-      <a class="nav-item" href="#" data-label="Ajustes">
+      <a class="nav-item" href="#" routerLinkActive="active" data-label="Ajustes">
         <span class="icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="12" r="3.6" stroke="currentColor" stroke-width="1.6" />
@@ -86,7 +88,7 @@
 
   <div class="content">
     <header class="header">
-      <h1 class="title">Contenido web</h1>
+      <h1 class="title">El glotón de Villaviciosa</h1>
     </header>
     <main class="main">
       <router-outlet />

@@ -18,7 +18,7 @@ export interface ItemsPedidoDTO {
   estado: string
 }
 
-export interface ChangeStateItemResponse {
+export interface StateOrderResponse {
   value: boolean,
   mensaje: string
 }

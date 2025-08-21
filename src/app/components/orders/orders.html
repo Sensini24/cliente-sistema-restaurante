@@ -6,16 +6,20 @@
       <span class="subtitle">Gestiona los pedidos pendientes</span>
     </div>
     <div class="header-filters">
-      <button class="filter-btn active" data-filter="all">Todas (12)</button>
-      <button class="filter-btn" data-filter="pending">Pendientes (5)</button>
-      <button class="filter-btn" data-filter="preparing">En Preparación (4)</button>
-      <button class="filter-btn" data-filter="ready">Listos (3)</button>
+    @let counts = stateCount$ | async;
+
+      <button class="filter-btn active" data-filter="all" (click)="getAll()">Todas</button>
+      <!-- <button class="filter-btn" data-filter="pending">Pendientes (5)</button> -->
+      <button class="filter-btn" data-filter="preparing" (click)="getPreparing()">En Preparacion ({{counts.preparing}})</button>
+      <button class="filter-btn" data-filter="ready" (click)="getListo()">Listos ({{counts.ready}})</button>
+      <button class="filter-btn" data-filter="partialyReady" (click)="getParcialmenteListo()">Parcialmente Listo ({{counts.partiallyReady}})</button>
+
     </div>
   </header>
 
   <!-- Comandas Grid -->
   <main class="comandas-grid">
-    @for(order of kOrders$ | async; track order.id){
+    @for(order of filterOrders$ | async; track order.id){
         <div class="comanda-card preparing" data-status="preparing">
           <div class="comanda-header">
             <span class="mesa">Mesa {{order.mesaid}}</span>
@@ -39,7 +43,9 @@
       }
         <div class="comanda-footer">
           <span class="status-badge pending">{{order.estado}}</span>
-          <span class="status-badge cancel">Cancelar</span>
+          @if(order.estado != "Listo" && order.estado != "Parcialmente Listo"){
+          <span class="status-badge cancel" (click)="cancelOrder(order.id)">Cancelar</span>
+            }
 
           <!-- <button class="action-btn">Iniciar</button> -->
         </div>
@@ -75,7 +81,7 @@
     <!--   <div class="comanda-pin"></div> -->
     <!-- </div> -->
     <!---->
-    <!-- <!-- Comanda En Preparación --> -->
+    <!-- Comanda En Preparación -->
     <!-- <div class="comanda-card preparing" data-status="preparing"> -->
     <!--   <div class="comanda-header"> -->
     <!--     <span class="mesa">Mesa 2</span> -->
@@ -101,7 +107,7 @@
     <!--   <div class="comanda-pin"></div> -->
     <!-- </div> -->
     <!---->
-    <!-- <!-- Comanda Lista --> -->
+    <!--  Comanda Lista -->
     <!-- <div class="comanda-card ready" data-status="ready"> -->
     <!--   <div class="comanda-header"> -->
     <!--     <span class="mesa">Mesa 8</span> -->
@@ -124,7 +130,7 @@
     <!--   <div class="comanda-pin"></div> -->
     <!-- </div> -->
     <!---->
-    <!-- <!-- Más comandas --> -->
+    <!--  Más comandas -->
     <!-- <div class="comanda-card pending" data-status="pending"> -->
     <!--   <div class="comanda-header"> -->
     <!--     <span class="mesa">Mesa 12</span> -->

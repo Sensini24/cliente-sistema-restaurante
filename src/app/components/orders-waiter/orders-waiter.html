@@ -1,0 +1,165 @@
+<!-- Anclas para las vistas -->
+<!-- <div id="cocina" class="anchor" aria-hidden="true"></div> -->
+<!-- <div id="mozo" class="anchor" aria-hidden="true"></div> -->
+<!-- <div id="caja" class="anchor" aria-hidden="true"></div> -->
+<!-- <div id="todos" class="anchor" aria-hidden="true"></div> -->
+<!---->
+<main class="container">
+  <section class="board" aria-label="Pedidos">
+    @for(order of orderWDTO$ | async; track order.id){
+    <article class="order card" id="o101" role="region" aria-labelledby="o101-title">
+      <header class="order-head">
+        <div>
+          <h2 class="order-title" id="o101-title">Pedido #{{order.id}}</h2>
+          <div class="order-sub">Mesa {{order.mesaid}} · {{order.fechahora | date:'hh:mm a'}} </div>
+        </div>
+        <div class="status">
+          <span class="tag pending">{{order.estado}}</span>
+          <!-- <span class="tag pending">Pendiente</span> -->
+          <!-- <span class="tag partial">Listo parcial</span> -->
+          <!-- <span class="tag ready">Todo listo</span> -->
+          <!-- <span class="tag served">Servido</span> -->
+          <!-- <span class="tag paid">Pagado</span> -->
+        </div>
+      </header>
+
+      @for(item of order.itempedidos; track item.id){
+      <div class="order-body">
+        <div class="row item">
+          <input id="o101-i1-ready" class="sr-only ready-input" type="checkbox" />
+          <input id="o101-i1-serv" class="sr-only served-input" type="checkbox" />
+          <span class="qty-box">× {{item.cantidad}}</span>
+          <div class="info">
+            <div class="name">{{item.nombreProducto}}</div>
+            <div class="note">{{item.notas}}</div>
+          </div>
+          <span class="subtotal">${{item.preciounitario * item.cantidad}}</span>
+          <div class="item-actions">
+            <label class="btn tiny ghost toggle ready" for="o101-i1-ready" (click)="changeStateItem(item.id)">{{item.estado}}</label>
+            <!-- <label class="btn tiny outline toggle served" for="o101-i1-serv">Servido</label> -->
+          </div>
+        </div>
+      </div>
+
+      }
+      <!-- <footer class="order-foot"> -->
+      <!--   <div class="sum"> -->
+      <!--     <span>Total</span><strong>${{order.total}}</strong> -->
+      <!--   </div> -->
+      <!--   <div class="foot-actions"> -->
+      <!--     <input id="paid-101" class="sr-only paid-input" type="checkbox" /> -->
+      <!--     <label class="btn tiny pay" for="paid-101">Pagado</label> -->
+      <!--   </div> -->
+      <!-- </footer> -->
+    </article>
+    }
+
+
+    <!-- <article class="order card" id="o102" role="region" aria-labelledby="o102-title"> -->
+    <!--   <header class="order-head"> -->
+    <!--     <div> -->
+    <!--       <h2 class="order-title" id="o102-title">Pedido #102</h2> -->
+    <!--       <div class="order-sub">Mesa 5 · Mozo Diego · 18:50</div> -->
+    <!--     </div> -->
+    <!--     <div class="status"> -->
+    <!--       <span class="tag pending">Pendiente</span> -->
+    <!--       <span class="tag partial">Listo parcial</span> -->
+    <!--       <span class="tag ready">Todo listo</span> -->
+    <!--       <span class="tag served">Servido</span> -->
+    <!--       <span class="tag paid">Pagado</span> -->
+    <!--     </div> -->
+    <!--   </header> -->
+    <!---->
+    <!--   <div class="order-body"> -->
+    <!--     <div class="row item"> -->
+    <!--       <input id="o102-i1-ready" class="sr-only ready-input" type="checkbox" checked /> -->
+    <!--       <input id="o102-i1-serv" class="sr-only served-input" type="checkbox" /> -->
+    <!--       <span class="qty-box">1×</span> -->
+    <!--       <div class="info"> -->
+    <!--         <div class="name">Curry Rojo</div> -->
+    <!--       </div> -->
+    <!--       <span class="subtotal">$13.50</span> -->
+    <!--       <div class="item-actions"> -->
+    <!--         <label class="btn tiny ghost toggle ready" for="o102-i1-ready">Listo</label> -->
+    <!--         <label class="btn tiny outline toggle served" for="o102-i1-serv">Servido</label> -->
+    <!--       </div> -->
+    <!--     </div> -->
+    <!---->
+    <!--     <div class="row item"> -->
+    <!--       <input id="o102-i2-ready" class="sr-only ready-input" type="checkbox" checked /> -->
+    <!--       <input id="o102-i2-serv" class="sr-only served-input" type="checkbox" /> -->
+    <!--       <span class="qty-box">2×</span> -->
+    <!--       <div class="info"> -->
+    <!--         <div class="name">Arroz Jazmín</div> -->
+    <!--       </div> -->
+    <!--       <span class="subtotal">$6.00</span> -->
+    <!--       <div class="item-actions"> -->
+    <!--         <label class="btn tiny ghost toggle ready" for="o102-i2-ready">Listo</label> -->
+    <!--         <label class="btn tiny outline toggle served" for="o102-i2-serv">Servido</label> -->
+    <!--       </div> -->
+    <!--     </div> -->
+    <!--   </div> -->
+    <!---->
+    <!--   <footer class="order-foot"> -->
+    <!--     <div class="sum"><span>Total</span><strong>$19.50</strong></div> -->
+    <!--     <div class="foot-actions"> -->
+    <!--       <input id="paid-102" class="sr-only paid-input" type="checkbox" /> -->
+    <!--       <label class="btn tiny pay" for="paid-102">Pagado</label> -->
+    <!--     </div> -->
+    <!--   </footer> -->
+    <!-- </article> -->
+    <!---->
+    <!-- <article class="order card" id="o103" role="region" aria-labelledby="o103-title"> -->
+    <!--   <header class="order-head"> -->
+    <!--     <div> -->
+    <!--       <h2 class="order-title" id="o103-title">Pedido #103</h2> -->
+    <!--       <div class="order-sub">Mesa 8 · Mozo Ana · 19:00</div> -->
+    <!--     </div> -->
+    <!--     <div class="status"> -->
+    <!--       <span class="tag pending">Pendiente</span> -->
+    <!--       <span class="tag partial">Listo parcial</span> -->
+    <!--       <span class="tag ready">Todo listo</span> -->
+    <!--       <span class="tag served">Servido</span> -->
+    <!--       <span class="tag paid">Pagado</span> -->
+    <!--     </div> -->
+    <!--   </header> -->
+    <!---->
+    <!--   <div class="order-body"> -->
+    <!--     <div class="row item"> -->
+    <!--       <input id="o103-i1-ready" class="sr-only ready-input" type="checkbox" checked /> -->
+    <!--       <input id="o103-i1-serv" class="sr-only served-input" type="checkbox" checked /> -->
+    <!--       <span class="qty-box">2×</span> -->
+    <!--       <div class="info"> -->
+    <!--         <div class="name">Burger Doble</div> -->
+    <!--         <div class="note">Sin pepinillos</div> -->
+    <!--       </div> -->
+    <!--       <span class="subtotal">$18.00</span> -->
+    <!--       <div class="item-actions"> -->
+    <!--         <label class="btn tiny ghost toggle ready" for="o103-i1-ready">Listo</label> -->
+    <!--         <label class="btn tiny outline toggle served" for="o103-i1-serv">Servido</label> -->
+    <!--       </div> -->
+    <!--     </div> -->
+    <!--     <div class="row item"> -->
+    <!--       <input id="o103-i2-ready" class="sr-only ready-input" type="checkbox" checked /> -->
+    <!--       <input id="o103-i2-serv" class="sr-only served-input" type="checkbox" checked /> -->
+    <!--       <span class="qty-box">2×</span> -->
+    <!--       <div class="info"> -->
+    <!--         <div class="name">Gaseosa</div> -->
+    <!--       </div> -->
+    <!--       <span class="subtotal">$6.00</span> -->
+    <!--       <div class="item-actions"> -->
+    <!--         <label class="btn tiny ghost toggle ready" for="o103-i2-ready">Listo</label> -->
+    <!--         <label class="btn tiny outline toggle served" for="o103-i2-serv">Servido</label> -->
+    <!--       </div> -->
+    <!--     </div> -->
+    <!--   </div> -->
+    <!---->
+    <!--   <footer class="order-foot"> -->
+    <!--     <div class="sum"><span>Total</span><strong>$24.00</strong></div> -->
+    <!--     <div class="foot-actions"> -->
+    <!--       <input id="paid-103" class="sr-only paid-input" type="checkbox" checked /> -->
+    <!--       <label class="btn tiny pay" for="paid-103">Pagado</label> -->
+    <!--     </div> -->
+    <!--   </footer> -->
+    <!-- </article> -->
+  </section>

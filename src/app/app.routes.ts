@@ -8,12 +8,20 @@ import { DishesComponent } from './components/dishes/dishes';
 import { OrdersWaiterComponent } from './components/orders-waiter/orders-waiter';
 
 export const routes: Routes = [
-  { path: "", redirectTo: "dishes", pathMatch: "full" },
-  { path: "dishes", component: DishesComponent, pathMatch: "full" },
-  { path: "tables", component: TablesComponent, pathMatch: "full" },
-  { path: "pays", component: PaysComponent, pathMatch: "full" },
-  { path: "orders", component: OrdersComponent, pathMatch: "full" },
-  { path: "orders-waiter", component: OrdersWaiterComponent, pathMatch: "full" },
-  { path: "newOrder", component: NewOrderComponent, pathMatch: "full" },
-  { path: "notifications", component: NotificationsComponent, pathMatch: "full" },
+  { path: '', redirectTo: 'dishes', pathMatch: 'full' },
+  { path: 'dishes', component: DishesComponent, pathMatch: 'full' },
+  { path: 'tables', component: TablesComponent, pathMatch: 'full' },
+  { path: 'pays', component: PaysComponent, pathMatch: 'full' },
+  { path: 'orders', component: OrdersComponent, pathMatch: 'full' },
+  {
+    path: 'orders-waiter',
+    component: OrdersWaiterComponent,
+    pathMatch: 'full',
+  },
+  { path: 'newOrder', component: NewOrderComponent, pathMatch: 'full' },
+  {
+    path: 'notifications',
+    component: NotificationsComponent,
+    pathMatch: 'full',
+  },
 ];

@@ -1,1 +1,47 @@
-<p>dishes works!</p>
+<div class="container">
+  <div class="main-content">
+    <!-- Sidebar Categories -->
+    <aside class="sidebar">
+      <!-- @let counts = countsForCategory$ | async; -->
+@for(category of countsForCategory$ | async; track category.name){
+<div class="category"  [class.active] = "category.name === isActive"  (click)="FilterByCategory(category.name)">
+        <span class="category-name">{{category.name}}</span>
+        <span class="item-count"> {{category.count}} Items</span>
+      </div>
+  }
+    </aside>
+
+    <!-- Menu Grid -->
+    <main class="menu-grid">
+    <!-- @let countItems = {{countDish}} -->
+      @for (dish of dishes$ | async; track dish.id) {
+        <div class="dish-card">
+          <div class="dish-image">
+            <img
+              src="/placeholder.svg?height=120&width=180"
+              alt="Scrambled Eggs With Toast"
+            />
+            <span class="badge popular">Popular</span>
+          </div>
+          <div class="dish-info">
+            <h3>{{ dish.nombre }}</h3>
+            <p>
+              perfectly seasoned scrambled eggs served with a side of warm toast
+            </p>
+            <div class="dish-footer">
+              <span class="price">${{ dish.precio }}</span>
+              <div class="quantity-controls">
+                <button class="qty-btn minus" (click)="ReduceCount(dish.id, dish.nombre, dish.precio)">-</button>
+                <span class="quantity" >{{ countMap.get(dish.id)?.[0] ?? 0 }} </span>
+                <button class="qty-btn plus" (click)="IncrementCount(dish.id, dish.nombre, dish.precio)">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+   </main>
+    <app-order-panel [fromTable]="fromTable" [countMap]="countMap">
+    </app-order-panel>
+
+   </div>
+</div>

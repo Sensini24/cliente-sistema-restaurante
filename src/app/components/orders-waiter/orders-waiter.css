@@ -243,8 +243,21 @@
     transform: scale(0.8);
     gap: 8px;
     grid-template-columns: repeat(1, 1fr);
-    /* Reduce el tamaño al 80% */
-    /* O puedes usar:
-       transform: translate(10px, 20px);  Mueve el elemento */
   }
+}
+
+
+/*Boton de nuevo pedido*/
+.btn-newOrder {
+  background-color: var(--primary);
+  color: white;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  margin-bottom: 15px;
 }

@@ -1,0 +1,34 @@
+<aside class="order-panel">
+  <h1>Detalle de Pedido</h1>
+  <h3>Mesa {{ tableNumber }}</h3>
+  @for (item of itemsToOrder; track item.id) {
+    <div class="order-items">
+      <div class="order-item">
+        <div class="item-info">
+          <h4>{{ item.nombre }}</h4>
+          <p>Note: make the egg well done</p>
+        </div>
+        <div class="item-details">
+          <span class="quantity">x{{ item.cantidad }}</span>
+          <span class="price">${{ item.subTotal }}</span>
+          <button class="notes-btn">Notes</button>
+        </div>
+      </div>
+    </div>
+  }
+  <div class="order-summary">
+    <div class="summary-line">
+      <span>Items (5)</span>
+      <span>$73.70</span>
+    </div>
+    <div class="summary-line">
+      <span>Tax (5%)</span>
+      <span>$3.65</span>
+    </div>
+    <div class="summary-total">
+      <span>$87.34</span>
+    </div>
+  </div>
+
+  <button class="proceed-btn">Proceed Order →</button>
+</aside>

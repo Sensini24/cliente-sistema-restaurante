@@ -1,65 +1,110 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { OrdersWIDTO, StateOrderResponse } from '../interfaces/IOrder';
-import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, of, tap } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OrdersService {
-  private apiUrlOrderWithItems: string = "http://localhost:5033/api/Pedido/ObtenerTodosLosPedidosConItems";
-  private apiUrlKitchenOrders: string = "http://localhost:5033/api/Pedido/ObtenerComandasCocina";
-  private apiUrlCancelOrder: string = "http://localhost:5033/api/Pedido/CancelarPedido/";
+  private apiUrlOrderWithItems: string =
+    'http://localhost:5033/api/Pedido/ObtenerTodosLosPedidosConItems';
 
+  private apiUrlKitchenOrders: string =
+    'http://localhost:5033/api/Pedido/ObtenerComandasCocina';
 
-  private ordersWithItemsSubject = new BehaviorSubject<OrdersWIDTO[] | null>(null);
+  private apiUrlCancelOrder: string =
+    'http://localhost:5033/api/Pedido/CancelarPedido/';
+
+  private apirUrlOrderById: string =
+    'http://localhost:5033/api/Pedido/ObtenerPedidoPorId/';
+
+  private ordersWithItemsSubject = new BehaviorSubject<OrdersWIDTO[] | null>(
+    null,
+  );
   public orderWI$ = this.ordersWithItemsSubject.asObservable();
 
-  private kitcherOrdersSubject = new BehaviorSubject<OrdersWIDTO[] | null>(null);
+  private kitcherOrdersSubject = new BehaviorSubject<OrdersWIDTO[] | null>(
+    null,
+  );
   public kOrders$ = this.kitcherOrdersSubject.asObservable();
 
-
+  private orderByIdSubject = new BehaviorSubject<OrdersWIDTO | null>(null);
+  public orderBId$ = this.orderByIdSubject.asObservable();
 
   constructor(private http: HttpClient) {
     this.GetOrdersWithItems();
-    this.GetKitcherOrders("All");
+    this.GetKitcherOrders('All');
   }
 
   GetOrdersWithItems(): void {
-    this.http.get<OrdersWIDTO[]>(this.apiUrlOrderWithItems, {
-      headers: { 'Content-Type': 'application/json' },
-    }).pipe(
-      tap(apidata => {
-        console.log("Pedidos con Items: ", apidata);
-        this.ordersWithItemsSubject.next(apidata);
+    this.http
+      .get<OrdersWIDTO[]>(this.apiUrlOrderWithItems, {
+        headers: { 'Content-Type': 'application/json' },
       })
-    ).subscribe();
+      .pipe(
+        tap((apidata) => {
+          console.log('Pedidos con Items: ', apidata);
+          this.ordersWithItemsSubject.next(apidata);
+        }),
+      )
+      .subscribe();
   }
 
   GetKitcherOrders(stateOrder: string): void {
-    this.http.get<OrdersWIDTO[]>(this.apiUrlKitchenOrders, {
-      headers: { 'Content-Type': 'application/json' },
-    }).pipe(
-      tap(apidata => {
-        console.log("Pedidos con Items: ", apidata);
-        if (stateOrder == "All") {
-          this.kitcherOrdersSubject.next(apidata);
-        } else {
-          var datos = apidata.filter(e => e.estado == stateOrder);
-          this.kitcherOrdersSubject.next(datos);
-        }
+    this.http
+      .get<OrdersWIDTO[]>(this.apiUrlKitchenOrders, {
+        headers: { 'Content-Type': 'application/json' },
       })
-    ).subscribe();
+      .pipe(
+        tap((apidata) => {
+          console.log('Pedidos con Items: ', apidata);
+          if (stateOrder == 'All') {
+            this.kitcherOrdersSubject.next(apidata);
+          } else {
+            var datos = apidata.filter((e) => e.estado == stateOrder);
+            this.kitcherOrdersSubject.next(datos);
+          }
+        }),
+        catchError((error) => {
+          console.error(`Error al obtener comandas para la cocina`, error);
+          this.orderByIdSubject.next(null);
+          return of(null);
+        }),
+      )
+      .subscribe();
+  }
+
+  GetOrderById(idOrder: number): void {
+    this.http
+      .get<OrdersWIDTO>(this.apirUrlOrderById + idOrder, {
+        headers: { 'Content-Type': 'application/json' },
+      })
+      .pipe(
+        tap((apidata) => {
+          this.orderByIdSubject.next(apidata);
+        }),
+        catchError((error) => {
+          console.error(
+            `Error al obtener comandas para la mesa ${idOrder}:`,
+            error,
+          );
+          this.orderByIdSubject.next(null);
+          return of(null);
+        }),
+      )
+      .subscribe();
   }
 
   CancelOrder(idOrder: number): Observable<StateOrderResponse | undefined> {
-    return this.http.put<StateOrderResponse>(this.apiUrlCancelOrder + idOrder, {
-      headers: { 'Content-Type': 'application/json' },
-    }).pipe(
-      tap(apidata => {
-        console.log("Pedidos con Items: ", apidata.mensaje);
+    return this.http
+      .put<StateOrderResponse>(this.apiUrlCancelOrder + idOrder, {
+        headers: { 'Content-Type': 'application/json' },
       })
-    )
+      .pipe(
+        tap((apidata) => {
+          console.log('Pedidos con Items: ', apidata.mensaje);
+        }),
+      );
   }
-
 }

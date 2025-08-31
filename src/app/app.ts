@@ -5,9 +5,8 @@ import { RouterLink, RouterModule, RouterOutlet } from '@angular/router';
   selector: 'app-root',
   imports: [RouterOutlet, RouterLink, RouterModule],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
   protected readonly title = signal('ClienteSistemaRestaurante');
-
 }

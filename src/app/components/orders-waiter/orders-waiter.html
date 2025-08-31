@@ -4,9 +4,11 @@
 <!-- <div id="caja" class="anchor" aria-hidden="true"></div> -->
 <!-- <div id="todos" class="anchor" aria-hidden="true"></div> -->
 <!---->
+
 <main class="container">
+<button class="btn-newOrder">+ Nuevo Pedido</button>
   <section class="board" aria-label="Pedidos">
-    @for(order of orderWDTO$ | async; track order.id){
+  @for(order of orderWDTO$ | async; track order.id){
     <article class="order card" id="o101" role="region" aria-labelledby="o101-title">
       <header class="order-head">
         <div>

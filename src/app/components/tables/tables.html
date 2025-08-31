@@ -1,76 +1,186 @@
-<main class="container">
-  <section class="card">
-    <div class="card-header">
+<div class="container">
+  <header class="page-header">
+    <h1>Mesas</h1>
+    <p class="subtitle">
+      Selecciona una mesa para iniciar o continuar un pedido.
+    </p>
+  </header>
+
+  <div class="main-content">
+    <div class="section-header">
       <h2>Estado de mesas</h2>
+      <div class="filters">
+        <label class="filter-option">
+          <input type="radio" name="filter" value="all" checked />
+          <span>Todas</span>
+        </label>
+        <label class="filter-option">
+          <input type="radio" name="filter" value="libre" />
+          <span>Libre</span>
+        </label>
+        <label class="filter-option">
+          <input type="radio" name="filter" value="ocupada" />
+          <span>Ocupada</span>
+        </label>
+        <label class="filter-option">
+          <input type="radio" name="filter" value="limpieza" />
+          <span>En limpieza</span>
+        </label>
+      </div>
     </div>
 
-    <div class="table-legend" role="list">
-      <span role="listitem"><span class="dot available"></span> Libre</span>
-      <span role="listitem"><span class="dot busy"></span> Ocupada</span>
-      <span role="listitem"><span class="dot paying"></span> En Limpieza</span>
+    <div class="mesas-grid">
+      @for (table of tables$ | async; track table.id) {
+        @if (table.estado == "Libre") {
+          <div
+            class="mesa-card libre"
+            (click)="showMesaOptions(table)"
+          >
+            <div class="mesa-number">{{ table.numero }}</div>
+            <div class="mesa-status">{{ table.estado }}</div>
+          </div>
+        } @else if (table.estado == "Ocupada") {
+          <div
+            class="mesa-card ocupada"
+            (click)="showMesaOptions(table)"
+          >
+            <div class="mesa-number">{{ table.numero }}</div>
+            <div class="mesa-status">{{ table.estado }}</div>
+          </div>
+        } @else if (table.estado == "En Limpieza") {
+          <div
+            class="mesa-card limpieza"
+            (click)="showMesaOptions(table)"
+          >
+            <div class="mesa-number">{{ table.numero }}</div>
+            <div class="mesa-status">{{ table.estado }}</div>
+          </div>
+        }
+      }
+
+      <!-- Modal de opciones para mesa libre -->
+      <div
+        class="modal-overlay"
+        [style.display]="stateFreeTable ? 'flex' : 'none'"
+        id="modal-mesa-libre"
+        *ngIf="showModal"
+      >
+        <div class="modal">
+          <div class="modal-header">
+            <h3>Mesa <span id="mesa-libre-number">{{table.numero}}</span></h3>
+            <button class="modal-close" (click)="closeModalOptions()">
+              &times;
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="option-list">
+              <button class="option-item" (click)="SendInfoTableToMakesOrder()">
+              <span class="option-icon">➕</span>
+                <span>Crear nuevo pedido</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal de opciones para mesa ocupada -->
+      <div
+        class="modal-overlay"
+        [style.display]="stateOccupiedTable ? 'flex' : 'none'"
+        id="modal-mesa-ocupada"
+        *ngIf="showModal"
+      >
+        <div class="modal">
+          <div class="modal-header">
+            <h3>Mesa <span id="mesa-ocupada-number">{{table.numero}}</span></h3>
+            <button class="modal-close" (click)="closeModalOptions()">
+              &times;
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="pedido-info">
+              <div class="info-row">
+                <span class="label">Hora inicio:</span>
+                <span class="value" id="pedido-hora">14:30</span>
+              </div>
+              <div class="info-row">
+                <span class="label">Items:</span>
+                <span class="value" id="pedido-items">3 items</span>
+              </div>
+              <div class="info-row">
+                <span class="label">Total:</span>
+                <span class="value" id="pedido-total">$45.50</span>
+              </div>
+            </div>
+            <div class="option-list">
+              <button class="option-item">
+                <span class="option-icon">👁️</span>
+                <span>Ver detalle del pedido</span>
+              </button>
+              <button class="option-item">
+                <span class="option-icon">➕</span>
+                <span>Agregar items</span>
+              </button>
+              <button class="option-item">
+                <span class="option-icon">✅</span>
+                <span>Finalizar pedido</span>
+              </button>
+              <button class="option-item">
+                <span class="option-icon">💰</span>
+                <span>Cobrar pedido</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal de opciones para mesa en limpieza -->
+      <div
+        class="modal-overlay"
+        [style.display]="stateCleaningTable ? 'flex' : 'none'"
+        id="modal-mesa-limpieza"
+        *ngIf="showModal"
+      >
+        <div class="modal">
+          <div class="modal-header">
+            <h3>Mesa <span id="mesa-limpieza-number">{{table.numero}}</span></h3>
+            <button class="modal-close" (click)="closeModalOptions()">
+              &times;
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="option-list">
+              <button class="option-item" (click)="changeToFreeStateTable()">
+                <span class="option-icon">✨</span>
+                <span >Marcar como libre</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal de confirmación -->
+      <div
+        class="modal-overlay"
+        [style.display]="confirmation ? 'flex' : 'none'"
+        *ngIf="showModal"
+        id="modal-confirmacion"
+      >
+        <div class="modal modal-small">
+          <div class="modal-header">
+            <h3>Confirmar acción</h3>
+          </div>
+          <div class="modal-body">
+            <p id="mensaje-confirmacion">
+              ¿Estás seguro de realizar esta acción?
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button class="btn-secondary">Cancelar</button>
+            <button class="btn-primary" id="btn-confirmar">Confirmar</button>
+          </div>
+        </div>
+      </div>
     </div>
-
-
-    <div class="table-grid">
-      @for(table of tables$ | async; track table.id){
-
-      @if(table.estado === "Ocupada"){
-      <label class="table is-busy" for="mesa-{{table.id}}">
-        {{table.numero}}
-      </label>
-      }
-      @else if(table.estado === "En Limpieza"){
-      <label class="table is-paying" for="mesa-{{table.id}}">
-        {{table.numero}}
-      </label>
-      }
-      @else {
-      <!-- Este es el estado por defecto para "Libre" -->
-      <label class="table is-available" for="mesa-{{table.id}}">
-        {{table.numero}}
-      </label>
-      }
-      }
-    </div>
-
-
-
-    <!-- <input class="sr-only" type="radio" name="mesa" id="mesa-1" /> -->
-    <!-- <label class="table is-busy" for="mesa-1">1</label> -->
-    <!---->
-    <!-- <input class="sr-only" type="radio" name="mesa" id="mesa-2" checked /> -->
-    <!-- <label class="table" for="mesa-2" aria-current="true">2</label> -->
-    <!---->
-    <!-- <input class="sr-only" type="radio" name="mesa" id="mesa-3" /> -->
-    <!-- <label class="table" for="mesa-3">3</label> -->
-    <!---->
-    <!-- <input class="sr-only" type="radio" name="mesa" id="mesa-4" /> -->
-    <!-- <label class="table is-paying" for="mesa-4">4</label> -->
-    <!---->
-    <!-- <input class="sr-only" type="radio" name="mesa" id="mesa-5" /> -->
-    <!-- <label class="table is-busy" for="mesa-5">5</label> -->
-    <!---->
-    <!-- <input class="sr-only" type="radio" name="mesa" id="mesa-6" /> -->
-    <!-- <label class="table" for="mesa-6">6</label> -->
-    <!---->
-    <!-- <input class="sr-only" type="radio" name="mesa" id="mesa-7" /> -->
-    <!-- <label class="table" for="mesa-7">7</label> -->
-    <!---->
-    <!-- <input class="sr-only" type="radio" name="mesa" id="mesa-8" /> -->
-    <!-- <label class="table" for="mesa-8">8</label> -->
-    <!---->
-    <!-- <input class="sr-only" type="radio" name="mesa" id="mesa-9" /> -->
-    <!-- <label class="table is-busy" for="mesa-9">9</label> -->
-    <!---->
-    <!-- <input class="sr-only" type="radio" name="mesa" id="mesa-10" /> -->
-    <!-- <label class="table" for="mesa-10">10</label> -->
-    <!---->
-    <!-- <input class="sr-only" type="radio" name="mesa" id="mesa-11" /> -->
-    <!-- <label class="table" for="mesa-11">11</label> -->
-    <!---->
-    <!-- <input class="sr-only" type="radio" name="mesa" id="mesa-12" /> -->
-    <!-- <label class="table" for="mesa-12">12</label> -->
-
-    <p class="hint">Sugerencia: esta selección puede enlazar a la pantalla de Comandas para la mesa elegida.</p>
-  </section>
-</main>
+  </div>
+</div>

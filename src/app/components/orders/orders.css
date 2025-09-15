@@ -58,14 +58,15 @@
 /* Comandas Grid */
 .comandas-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 55px;
 }
 
 /* Comanda Card - Estilo Sticky Note */
 .comanda-card {
   position: relative;
   background: var(--surface);
+  width: 360px;
   border: 2px solid var(--line);
   border-radius: var(--radius);
   padding: 20px;
@@ -108,7 +109,7 @@
 }
 
 .comanda-pin::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -225,13 +226,13 @@
 }
 
 .status-badge.cancel {
-  background: #FFD6CC;
+  background: #ffd6cc;
   color: #166534;
   border: 1px solid #22c55e;
 }
 
 .status-badge:hover {
-  background: #EF6B2E;
+  background: #ef6b2e;
   color: #166534;
 }
 
@@ -315,8 +316,6 @@
 .comanda-card:active {
   transform: scale(0.98);
 }
-
-
 
 /*MODAL CAMBIO DE ESTADO*/
 

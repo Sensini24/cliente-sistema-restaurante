@@ -32,26 +32,17 @@
     <div class="mesas-grid">
       @for (table of tables$ | async; track table.id) {
         @if (table.estado == "Libre") {
-          <div
-            class="mesa-card libre"
-            (click)="showMesaOptions(table)"
-          >
+          <div class="mesa-card libre" (click)="showMesaOptions(table)">
             <div class="mesa-number">{{ table.numero }}</div>
             <div class="mesa-status">{{ table.estado }}</div>
           </div>
         } @else if (table.estado == "Ocupada") {
-          <div
-            class="mesa-card ocupada"
-            (click)="showMesaOptions(table)"
-          >
+          <div class="mesa-card ocupada" (click)="showMesaOptions(table)">
             <div class="mesa-number">{{ table.numero }}</div>
             <div class="mesa-status">{{ table.estado }}</div>
           </div>
         } @else if (table.estado == "En Limpieza") {
-          <div
-            class="mesa-card limpieza"
-            (click)="showMesaOptions(table)"
-          >
+          <div class="mesa-card limpieza" (click)="showMesaOptions(table)">
             <div class="mesa-number">{{ table.numero }}</div>
             <div class="mesa-status">{{ table.estado }}</div>
           </div>
@@ -67,15 +58,18 @@
       >
         <div class="modal">
           <div class="modal-header">
-            <h3>Mesa <span id="mesa-libre-number">{{table.numero}}</span></h3>
+            <h3>Mesa <span id="mesa-libre-number">{{ table.numero }}</span></h3>
             <button class="modal-close" (click)="closeModalOptions()">
               &times;
             </button>
           </div>
           <div class="modal-body">
             <div class="option-list">
-              <button class="option-item" (click)="SendInfoTableToMakesOrder()">
-              <span class="option-icon">➕</span>
+              <button
+                class="option-item"
+                (click)="SendInfoTableToMakesOrder()"
+              >
+                <span class="option-icon">➕</span>
                 <span>Crear nuevo pedido</span>
               </button>
             </div>
@@ -85,55 +79,58 @@
 
       <!-- Modal de opciones para mesa ocupada -->
       <div
-        class="modal-overlay"
-        [style.display]="stateOccupiedTable ? 'flex' : 'none'"
-        id="modal-mesa-ocupada"
-        *ngIf="showModal"
-      >
-        <div class="modal">
-          <div class="modal-header">
-            <h3>Mesa <span id="mesa-ocupada-number">{{table.numero}}</span></h3>
-            <button class="modal-close" (click)="closeModalOptions()">
-              &times;
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="pedido-info">
-              <div class="info-row">
-                <span class="label">Hora inicio:</span>
-                <span class="value" id="pedido-hora">14:30</span>
-              </div>
-              <div class="info-row">
-                <span class="label">Items:</span>
-                <span class="value" id="pedido-items">3 items</span>
-              </div>
-              <div class="info-row">
-                <span class="label">Total:</span>
-                <span class="value" id="pedido-total">$45.50</span>
-              </div>
-            </div>
-            <div class="option-list">
-              <button class="option-item">
-                <span class="option-icon">👁️</span>
-                <span>Ver detalle del pedido</span>
-              </button>
-              <button class="option-item">
-                <span class="option-icon">➕</span>
-                <span>Agregar items</span>
-              </button>
-              <button class="option-item">
-                <span class="option-icon">✅</span>
-                <span>Finalizar pedido</span>
-              </button>
-              <button class="option-item">
-                <span class="option-icon">💰</span>
-                <span>Cobrar pedido</span>
-              </button>
-            </div>
-          </div>
+  class="modal-overlay"
+  id="modal-mesa-ocupada"
+  *ngIf="showModal"
+  [style.display]="stateOccupiedTable ? 'flex' : 'none'"
+>
+  <div class="modal">
+    @let order = orderDetails$ | async;
+
+    <div class="modal-header">
+      <h3>Mesa <span id="mesa-ocupada-number">{{ table.numero }}</span></h3>
+      <button class="modal-close" (click)="closeModalOptions()">
+        &times;
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="pedido-info">
+        <div class="info-row">
+          <span class="label">Hora inicio:</span>
+          <span class="value" id="pedido-hora">
+            {{ order?.fechahora | date: "hh:mm a" }}
+          </span>
+        </div>
+        <div class="info-row">
+          <span class="label">Items:</span>
+          <span class="value" id="pedido-items">{{order?.itempedidos?.length}} items</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Total:</span>
+          <span class="value" id="pedido-total">${{order?.total}}</span>
         </div>
       </div>
-
+      <div class="option-list">
+        <button class="option-item">
+          <span class="option-icon">👁️</span>
+          <span>Ver detalle del pedido</span>
+        </button>
+        <button class="option-item" (click)="SendInfoOrderToUpdateOrder(order?.id ?? 0)">
+          <span class="option-icon">➕</span>
+          <span>Agregar items</span>
+        </button>
+        <button class="option-item">
+          <span class="option-icon">✅</span>
+          <span>Finalizar pedido</span>
+        </button>
+        <button class="option-item">
+          <span class="option-icon">💰</span>
+          <span>Cobrar pedido</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
       <!-- Modal de opciones para mesa en limpieza -->
       <div
         class="modal-overlay"
@@ -143,7 +140,7 @@
       >
         <div class="modal">
           <div class="modal-header">
-            <h3>Mesa <span id="mesa-limpieza-number">{{table.numero}}</span></h3>
+            <h3>Mesa <span id="mesa-limpieza-number">{{ table.numero }}</span></h3>
             <button class="modal-close" (click)="closeModalOptions()">
               &times;
             </button>
@@ -152,7 +149,7 @@
             <div class="option-list">
               <button class="option-item" (click)="changeToFreeStateTable()">
                 <span class="option-icon">✨</span>
-                <span >Marcar como libre</span>
+                <span>Marcar como libre</span>
               </button>
             </div>
           </div>

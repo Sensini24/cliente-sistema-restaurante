@@ -15,7 +15,7 @@ export class TablesService {
 
   private tableSubject = new BehaviorSubject<TableGetDTO[] | null>(null);
   public tables$ = this.tableSubject.asObservable();
-  private tableBIdSubject = new ReplaySubject<TableGetDTO>(1);
+  private tableBIdSubject = new BehaviorSubject<TableGetDTO | null>(null);
   public tableBId$ = this.tableBIdSubject.asObservable();
 
   constructor(private http: HttpClient) {
@@ -59,5 +59,9 @@ export class TablesService {
           this.tableBIdSubject.next(apidata);
         }),
       );
+  }
+
+  clearTableById(): void {
+    this.tableBIdSubject.next(null);
   }
 }

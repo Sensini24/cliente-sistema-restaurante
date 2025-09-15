@@ -17,10 +17,10 @@
       @for (dish of dishes$ | async; track dish.id) {
         <div class="dish-card">
           <div class="dish-image">
-            <img
-              src="/placeholder.svg?height=120&width=180"
-              alt="Scrambled Eggs With Toast"
-            />
+            <!-- <img -->
+            <!--   src="/placeholder.svg?height=120&width=180" -->
+            <!--   alt="Scrambled Eggs With Toast" -->
+            <!-- /> -->
             <span class="badge popular">Popular</span>
           </div>
           <div class="dish-info">
@@ -30,7 +30,7 @@
             </p>
             <div class="dish-footer">
               <span class="price">${{ dish.precio }}</span>
-              <div class="quantity-controls">
+              <div class="quantity-controls" *ngIf="showDishes">
                 <button class="qty-btn minus" (click)="ReduceCount(dish.id, dish.nombre, dish.precio)">-</button>
                 <span class="quantity" >{{ countMap.get(dish.id)?.[0] ?? 0 }} </span>
                 <button class="qty-btn plus" (click)="IncrementCount(dish.id, dish.nombre, dish.precio)">+</button>
@@ -40,7 +40,85 @@
         </div>
       }
    </main>
-    <app-order-panel [fromTable]="fromTable" [countMap]="countMap">
+
+   <!-- Panel del pedido actual -->
+            <div class="order-panel" *ngIf="showPanelUpdate">
+            @let order=orderByIdFromDishes;
+                <div class="panel-header">
+                    <h2>Editar Pedido</h2>
+                    <div class="order-status">
+                    Estado de pedido:
+                        <span class="status-badge status-pending">{{order?.estado}}</span>
+                    </div>
+                </div>
+
+                <div class="order-items">
+
+
+                    @for(item of order?.itempedidos; track item.id){
+
+                    @if(item.estado == "Listo" || item.estado == "Servido"){
+                <span class="status-badge status-pending">
+                Este plato o bebida ya está preparado o disponible. Se cobrará una comision en caso de cancelar uno o más items ya preparados</span>
+
+                      <div class="order-item existing">
+                            <div class="item-info">
+                                <h4>{{item.nombreProducto}}</h4>
+                                <p class="item-notes">Sin cebolla</p>
+                                <div class="item-price">{{item?.preciounitario}}</div>
+                            </div>
+                            <div class="quantity-controls">
+                            <!-- <button class="qty-btn" onclick="updateQuantity('hamburguesa', -1)">-</button> -->
+                                <span class="quantity">{{item.cantidad}}</span>
+                            <!-- <button class="qty-btn" onclick="updateQuantity('hamburguesa', 1)">+</button> -->
+                            </div>
+                            <div class="item-total">${{item.cantidad * item.preciounitario}}</div>
+                      </div>
+
+                        }
+
+                      @if(item.estado == "Pendiente" || item.estado == "En Preparacion"){
+                      <div class="order-item existing">
+                            <div class="item-info">
+                                <h4>{{item.nombreProducto}}</h4>
+                                <p class="item-notes">Sin cebolla</p>
+                                <div class="item-price">{{item?.preciounitario}}</div>
+                            </div>
+                            <div class="quantity-controls">
+                            <!-- <button class="qty-btn" onclick="updateQuantity('hamburguesa', -1)">-</button> -->
+                                <span class="quantity">{{item.cantidad}}</span>
+                            <!-- <button class="qty-btn" onclick="updateQuantity('hamburguesa', 1)">+</button> -->
+                            </div>
+                            <div class="item-total">${{item.cantidad * item.preciounitario}}</div>
+                      </div>
+
+                        }
+                     <!-- Items recién agregados aparecerán aquí -->
+                      <div id="new-items"></div>
+                       }
+                    </div>
+
+                <div class="order-summary">
+                    <!-- <div class="summary-line"> -->
+                    <!--     <span>Subtotal:</span> -->
+                    <!--     <span id="subtotal">$28.97</span> -->
+                    <!-- </div> -->
+                    <!-- <div class="summary-line"> -->
+                    <!--     <span>Impuestos (10%):</span> -->
+                    <!--     <span id="tax">$2.90</span> -->
+                    <!-- </div> -->
+                    <div class="summary-line total">
+                        <span>Total:</span>
+                        <span id="total">${{order?.total}}</span>
+                    </div>
+                </div>
+
+                <div class="order-actions">
+                    <button class="btn-secondary">Agregar Nota</button>
+                    <button class="btn-primary">Actualizar Pedido</button>
+                </div>
+            </div>
+    <app-order-panel *ngIf="showOrderPanel" [fromTable]="fromTable" [countMap]="countMap">
     </app-order-panel>
 
    </div>

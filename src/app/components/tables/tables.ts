@@ -1,15 +1,16 @@
-import { AsyncPipe, CommonModule } from '@angular/common';
+import { AsyncPipe, CommonModule, DatePipe } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { filter, map, Observable, Subscription, tap } from 'rxjs';
 import { TableGetDTO } from '../../interfaces/ITable';
 import { TablesService } from '../../services/tables-service';
 import { Router } from '@angular/router';
-import { log } from 'node:console';
+import { OrdersService } from '../../services/orders-service';
+import { OrdersWIDTO } from '../../interfaces/IOrder';
 
 @Component({
   selector: 'app-tables',
   standalone: true,
-  imports: [AsyncPipe, CommonModule],
+  imports: [AsyncPipe, CommonModule, DatePipe],
   templateUrl: './tables.html',
   styleUrl: './tables.css',
 })
@@ -27,13 +28,17 @@ export class TablesComponent implements OnInit, OnDestroy {
 
   //Recepcion de mesa al clicar en una mesa para ver sus opciones
   table: TableGetDTO = { id: 0, numero: 0, estado: '' };
+  orderDetails$!: Observable<OrdersWIDTO | null>;
 
   //Suscribciones
   private tableByIdSubscription: Subscription | undefined;
+  private OrderByIdTableSubscription: Subscription | undefined;
+  private orderByIdSubscription: Subscription | undefined;
 
   constructor(
     // private cdr: ChangeDetectorRef,
     private _tableService: TablesService,
+    private _orderService: OrdersService,
     private router: Router,
   ) {}
   ngOnInit(): void {
@@ -49,6 +54,17 @@ export class TablesComponent implements OnInit, OnDestroy {
 
   //WARNING: Este método se puede factorizar y reducir.
   showMesaOptions(table: TableGetDTO) {
+    // this.OrderByIdTableSubscription = this._orderService
+    //   .GetOrderByTable(this.table.id)
+    //   .subscribe((apidata) => {
+    //     if (!apidata || apidata == undefined) {
+    //       console.log('No se obtuvo ningún pedido por mesa id.');
+    //       return;
+    //     }
+    //     console.log('Data de pedido por id de mesa: ', apidata);
+    //     this.orderDetails = apidata;
+    //   });
+
     if (table.estado == 'Libre') {
       this.showModal = true;
       this.stateFreeTable = true;
@@ -67,6 +83,20 @@ export class TablesComponent implements OnInit, OnDestroy {
     }
     console.log('Estado mesa: ', table.estado);
     this.table = table;
+
+    this.getTableById(table.id);
+  }
+
+  // OBTENCION DE UN PEDIDO POR MESA
+  getTableById(idTable: number) {
+    this.orderDetails$ = this._orderService.orderWI$.pipe(
+      map((orders: OrdersWIDTO[] | any) =>
+        orders.find((order: OrdersWIDTO) => order.mesaid === idTable),
+      ),
+      tap((order: OrdersWIDTO) =>
+        console.log('Busqueda de pedido por id mesa:', order),
+      ),
+    );
   }
 
   closeModalOptions() {
@@ -92,7 +122,19 @@ export class TablesComponent implements OnInit, OnDestroy {
       });
   }
 
+  SendInfoOrderToUpdateOrder(idOrder: number): void {
+    this.orderByIdSubscription = this._orderService
+      .GetOrderById(idOrder)
+      .subscribe((apidata) => {
+        console.log('Se recibio datos de pedidos al suscribirse: ', apidata);
+        this.router.navigate(['/dishes']);
+      });
+  }
+
   ngOnDestroy(): void {
     if (this.tableByIdSubscription) this.tableByIdSubscription.unsubscribe();
+    if (this.OrderByIdTableSubscription)
+      this.OrderByIdTableSubscription.unsubscribe();
+    if (this.orderByIdSubscription) this.orderByIdSubscription.unsubscribe();
   }
 }

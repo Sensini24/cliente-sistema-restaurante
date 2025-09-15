@@ -10,30 +10,28 @@ import { OrdersService } from '../../services/orders-service';
   selector: 'app-orders-all',
   imports: [AsyncPipe, DatePipe],
   templateUrl: './orders-waiter.html',
-  styleUrl: './orders-waiter.css'
+  styleUrl: './orders-waiter.css',
 })
 export class OrdersWaiterComponent implements OnInit {
-
-
   orderWDTO$!: Observable<OrdersWIDTO[] | null>;
 
-  constructor(private _orderWService: OrderWService, private _orderService: OrdersService, private _itemService: ItemService) {
-
-  }
+  constructor(
+    private _orderWService: OrderWService,
+    private _orderService: OrdersService,
+    private _itemService: ItemService,
+  ) {}
 
   ngOnInit(): void {
     this.orderWDTO$ = this._orderWService.orderW$;
   }
 
   changeStateItem(idItem: number): void {
-    this._itemService.ChangeStateItem(idItem)
-      .subscribe(() => {
-        this._orderService.GetKitcherOrders("All");
+    this._itemService.ChangeStateItem(idItem).subscribe(() => {
+      this._orderService.GetKitcherOrders('All');
 
-        // NOTE: Actualizamos la lista de pedidos para mozo para que se muestren los
-        // nuevos estados.
-        this._orderWService.GetOrdersWaiter();
-      });
+      // NOTE: Actualizamos la lista de pedidos para mozo para que se muestren los
+      // nuevos estados.
+      this._orderWService.GetOrdersWaiter();
+    });
   }
-
 }

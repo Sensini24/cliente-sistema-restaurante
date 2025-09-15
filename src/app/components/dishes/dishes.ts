@@ -1,11 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DishService } from '../../services/dish-service';
-import { filter, map, Observable, Subscription } from 'rxjs';
+import { combineLatest, filter, map, Observable, Subscription } from 'rxjs';
 import { DishDTO } from '../../interfaces/IDish';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { TablesService } from '../../services/tables-service';
 import { TableGetDTO } from '../../interfaces/ITable';
 import { OrderPanelComponent } from '../order-panel/order-panel';
+import { OrdersService } from '../../services/orders-service';
+import { OrdersWIDTO } from '../../interfaces/IOrder';
 
 @Component({
   selector: 'app-dishes',
@@ -23,14 +25,26 @@ export class DishesComponent implements OnInit, OnDestroy {
   fromTable: TableGetDTO | null = null;
   suma: number = 0;
   tableReceived: TableGetDTO | null | undefined;
+  showOrderPanel: boolean = false;
+  showDishes: boolean = false;
+  showPanelUpdate: boolean = false;
+
+  //Variables para almacenamiento de objetos
+  orderByIdFromDishes: OrdersWIDTO | undefined;
 
   //Suscriptions
   private tableSubscription: Subscription | undefined;
+  private orderSubscription: Subscription | undefined;
 
   public dishes: DishDTO[] = [];
+
+  //Map para almacenar eleccion de dishes
+  countMap: Map<number, [number, string, number]> = new Map();
+
   constructor(
     private _dishService: DishService,
     private _tableService: TablesService,
+    private _orderService: OrdersService,
   ) {}
 
   ngOnInit(): void {
@@ -40,14 +54,38 @@ export class DishesComponent implements OnInit, OnDestroy {
     this.tableSubscription = this._tableService.tableBId$.subscribe((data) => {
       if (!data) {
         this.fromTable = data;
+        this.showOrderPanel = false;
         console.log('No Viene desde una mesa: ', this.fromTable);
       } else {
         this.tableReceived = data;
         this.fromTable = data;
+        this.showOrderPanel = true;
+        this.showDishes = true;
         console.log(this.fromTable);
         console.log('Mesa recibida en dishes:', data);
       }
     });
+
+    //OBTENCION DE PEDIDO DESDE MESAS
+    this.orderSubscription = this._orderService.orderBId$.subscribe((data) => {
+      if (!data) {
+        this.showPanelUpdate = false;
+      } else {
+        this.showPanelUpdate = true;
+        this.showDishes = true;
+        this.orderByIdFromDishes = data;
+      }
+    });
+
+    if (this.orderByIdFromDishes) {
+      this.orderByIdFromDishes.itempedidos.forEach((elem) => {
+        this.countMap.set(elem.productoid, [
+          elem.cantidad,
+          elem.nombreProducto,
+          elem.preciounitario,
+        ]);
+      });
+    }
 
     this.countsForCategory$ = this._dishService.dishesBC$.pipe(
       map((elements) => {
@@ -128,7 +166,6 @@ export class DishesComponent implements OnInit, OnDestroy {
   // AUMENTAR O REDUCIR CANTIDAD DE PLATOS PARA PEDIDO
   countDish: number | undefined = 0;
   dishId: number = 0;
-  countMap: Map<number, [number, string, number]> = new Map();
 
   ReduceCount(idDish: number, dishName: string, dishPrice: number) {
     this.dishId = idDish;
@@ -147,9 +184,29 @@ export class DishesComponent implements OnInit, OnDestroy {
       ];
       if (cantidad <= 1) {
         this.countMap.set(idDish, [0, dishName, dishPrice]);
+        // Se quita el item en caso de que tenga cantidad de 0
+        if (this.countMap.get(idDish)) {
+          this.countMap.delete(idDish);
+
+          //Filtrar lista de muestra en el panel de actualizacion para quitar los que no tengan cantidad
+          this.removeItemOfOrderById(idDish);
+          console.log('orden actual: ', this.orderByIdFromDishes);
+        }
       } else {
         this.countMap.set(idDish, [cantidad - 1, nombre, precio]);
+        //Reducir cantidad de elementos en el panel de actualización
+        if (this.orderByIdFromDishes) {
+          this.orderByIdFromDishes.itempedidos =
+            this.orderByIdFromDishes?.itempedidos.map((elem) => {
+              if (elem.productoid === idDish) {
+                return { ...elem, cantidad: elem.cantidad - 1 };
+              }
+              return elem;
+            });
+        }
       }
+
+      console.log('COUNT MAP: ', this.countMap);
     }
 
     // Actualizo el map, para recibir cambios en el componente hijo.
@@ -171,13 +228,38 @@ export class DishesComponent implements OnInit, OnDestroy {
         0,
       ];
       this.countMap.set(idDish, [cantidad + 1, nombre, precio]);
+
+      //Incrementar cantidad de los elementos de panel de actualización
+      this.incrCountOfOrderById(idDish);
     }
     this.countMap = new Map(this.countMap);
-
+    console.log('COUNT MAP: ', this.countMap);
     // console.log('Cantidad de platos: ', this.countMap.get(this.dishId));
+  }
+
+  incrCountOfOrderById(idDish: number) {
+    if (this.orderByIdFromDishes) {
+      this.orderByIdFromDishes.itempedidos =
+        this.orderByIdFromDishes?.itempedidos.map((elem) => {
+          if (elem.productoid === idDish) {
+            return { ...elem, cantidad: elem.cantidad + 1 };
+          }
+          return elem;
+        });
+    }
+  }
+
+  removeItemOfOrderById(idDish: number) {
+    if (this.orderByIdFromDishes) {
+      this.orderByIdFromDishes.itempedidos =
+        this.orderByIdFromDishes.itempedidos.filter(
+          (elem) => elem.productoid !== idDish,
+        );
+    }
   }
 
   ngOnDestroy(): void {
     if (this.tableSubscription) this.tableSubscription.unsubscribe();
+    if (this.orderSubscription) this.orderSubscription.unsubscribe();
   }
 }

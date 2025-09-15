@@ -1,6 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { OrdersWIDTO, StateOrderResponse } from '../interfaces/IOrder';
+import {
+  OrderCreateDTO,
+  OrdersWIDTO,
+  StateOrderResponse,
+} from '../interfaces/IOrder';
 import { BehaviorSubject, catchError, Observable, of, tap } from 'rxjs';
 
 @Injectable({
@@ -19,6 +23,12 @@ export class OrdersService {
   private apirUrlOrderById: string =
     'http://localhost:5033/api/Pedido/ObtenerPedidoPorId/';
 
+  private apiUrlSaveOrder: string =
+    'http://localhost:5033/api/Pedido/CrerPedido/';
+
+  private apiUrlGetOrderByTableId =
+    'http://localhost:5033/api/Pedido/ObtenerPedidoPorIdMesa/';
+
   private ordersWithItemsSubject = new BehaviorSubject<OrdersWIDTO[] | null>(
     null,
   );
@@ -31,6 +41,14 @@ export class OrdersService {
 
   private orderByIdSubject = new BehaviorSubject<OrdersWIDTO | null>(null);
   public orderBId$ = this.orderByIdSubject.asObservable();
+
+  private makesOrderSubjet = new BehaviorSubject<OrdersWIDTO | null>(null);
+  public makesOrder$ = this.makesOrderSubjet.asObservable();
+
+  private getOrderByTableIdSubject = new BehaviorSubject<OrdersWIDTO | null>(
+    null,
+  );
+  public getOrderBTId$ = this.getOrderByTableIdSubject.asObservable();
 
   constructor(private http: HttpClient) {
     this.GetOrdersWithItems();
@@ -75,14 +93,15 @@ export class OrdersService {
       .subscribe();
   }
 
-  GetOrderById(idOrder: number): void {
-    this.http
+  GetOrderById(idOrder: number): Observable<OrdersWIDTO | null> {
+    return this.http
       .get<OrdersWIDTO>(this.apirUrlOrderById + idOrder, {
         headers: { 'Content-Type': 'application/json' },
       })
       .pipe(
         tap((apidata) => {
           this.orderByIdSubject.next(apidata);
+          console.log('Obtencion de order por id en service: ', apidata);
         }),
         catchError((error) => {
           console.error(
@@ -92,8 +111,27 @@ export class OrdersService {
           this.orderByIdSubject.next(null);
           return of(null);
         }),
-      )
-      .subscribe();
+      );
+  }
+
+  GetOrderByTable(idMesa: number): Observable<OrdersWIDTO | undefined | null> {
+    return this.http
+      .get<OrdersWIDTO>(this.apiUrlGetOrderByTableId + idMesa, {
+        headers: { 'Content-Type': 'application/json' },
+      })
+      .pipe(
+        tap((apidata) => {
+          this.getOrderByTableIdSubject.next(apidata);
+        }),
+        catchError((error) => {
+          console.error(
+            `Error al obtener el pedido por id mesa ${idMesa}:`,
+            error,
+          );
+          this.orderByIdSubject.next(null);
+          return of(null);
+        }),
+      );
   }
 
   CancelOrder(idOrder: number): Observable<StateOrderResponse | undefined> {
@@ -104,6 +142,20 @@ export class OrdersService {
       .pipe(
         tap((apidata) => {
           console.log('Pedidos con Items: ', apidata.mensaje);
+        }),
+      );
+  }
+
+  CreatesOrder(orderDTO: OrderCreateDTO): Observable<any | undefined> {
+    return this.http
+      .post<any>(this.apiUrlSaveOrder, orderDTO, {
+        headers: { 'Content-Type': 'application/json' },
+        withCredentials: true,
+      })
+      .pipe(
+        tap((apidata) => {
+          console.log('Respuesta a crear pedido: ', apidata);
+          this.makesOrderSubjet.next(apidata);
         }),
       );
   }

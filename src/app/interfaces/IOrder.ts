@@ -1,3 +1,5 @@
+import { ItemCreateDTO } from './IItem';
+
 export interface OrdersWIDTO {
   id: number;
   fechahora: Date;
@@ -21,4 +23,10 @@ export interface ItemsPedidoDTO {
 export interface StateOrderResponse {
   value: boolean;
   mensaje: string;
+}
+
+export interface OrderCreateDTO {
+  usuarioid: number;
+  mesaid: number;
+  itempedidos: ItemCreateDTO[];
 }

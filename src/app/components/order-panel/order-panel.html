@@ -1,34 +1,52 @@
 <aside class="order-panel">
-  <h1>Detalle de Pedido</h1>
+  <h2>Detalle de Pedido</h2>
   <h3>Mesa {{ tableNumber }}</h3>
+          <div class="order-items">
+
   @for (item of itemsToOrder; track item.id) {
-    <div class="order-items">
-      <div class="order-item">
-        <div class="item-info">
-          <h4>{{ item.nombre }}</h4>
-          <p>Note: make the egg well done</p>
+
+    @if(item.cantidad !== 0){
+      <div class="order-item-note">
+        <button class="notes-btn">Agregar nota</button>
+
+        <div class="order-item">
+          <div class="item-info">
+            <h4>{{ item.nombre }}</h4>
+              <p>Note: {{nota}}</p>
+
+          </div>
+          <div class="item-details">
+            <span class="quantity">x{{ item.cantidad }}</span>
+            <span class="price">${{ item.subTotal }}</span>
+            <button style="background-color: #ea6962; border-radius:5px" >Quitar</button>
+
+          </div>
         </div>
-        <div class="item-details">
-          <span class="quantity">x{{ item.cantidad }}</span>
-          <span class="price">${{ item.subTotal }}</span>
-          <button class="notes-btn">Notes</button>
-        </div>
+        <!-- <i class="fa-solid fa-xmark" style="color: #e67222;">X</i> -->
       </div>
-    </div>
+       <hr>
+
+    }
+
   }
+          </div>
+
   <div class="order-summary">
     <div class="summary-line">
-      <span>Items (5)</span>
-      <span>$73.70</span>
+      <span>Items ({{itemsToOrder.length}})</span>
+      <!-- <span>${{totalPrice}}</span> -->
+       <div class="summary-total">
+      <span>${{totalPrice}}</span>
     </div>
-    <div class="summary-line">
-      <span>Tax (5%)</span>
-      <span>$3.65</span>
     </div>
-    <div class="summary-total">
-      <span>$87.34</span>
-    </div>
-  </div>
+    <!-- <div class="summary-line"> -->
+    <!--   <span>Tax (5%)</span> -->
+    <!--   <span>$3.65</span> -->
+    <!-- </div> -->
 
-  <button class="proceed-btn">Proceed Order →</button>
+  </div>
+  <div style="display:flex; justify-content: space-between">
+    <button class="proceed-btn" (click)="CancelOrder()">Cancelar Pedido</button>
+    <button class="proceed-btn" (click)="MakesOrder()">Proceder Pedido</button>
+  </div>
 </aside>

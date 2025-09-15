@@ -8,4 +8,11 @@ export interface OrderDetailDTO {
   cantidad: number;
   nombre: string;
   subTotal: number;
+  nota: string;
+}
+
+export interface ItemCreateDTO {
+  productoid: number;
+  cantidad: number;
+  notas: string;
 }

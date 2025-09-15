@@ -11,9 +11,8 @@ import { OrderWService } from '../../services/order-wservice';
   standalone: true,
   imports: [AsyncPipe, DatePipe],
   templateUrl: './orders.html',
-  styleUrl: './orders.css'
+  styleUrl: './orders.css',
 })
-
 export class OrdersComponent implements OnInit {
   orderWI$!: Observable<OrdersWIDTO[] | null>;
   KOrders$!: Observable<OrdersWIDTO[] | null>;
@@ -26,10 +25,11 @@ export class OrdersComponent implements OnInit {
   allOrders$!: Observable<OrdersWIDTO[] | null>;
   filterOrders$!: Observable<OrdersWIDTO[] | null>;
 
-
-
-  constructor(private _orderService: OrdersService, private _orderWService: OrderWService, private _itemService: ItemService) {
-  }
+  constructor(
+    private _orderService: OrdersService,
+    private _orderWService: OrderWService,
+    private _itemService: ItemService,
+  ) {}
 
   ngOnInit(): void {
     this.KOrders$ = this._orderService.kOrders$;
@@ -38,31 +38,34 @@ export class OrdersComponent implements OnInit {
     //   this.kordersArray = apidata
     // });
     //
-    this.stateCount$ = this._orderService.kOrders$
-      .pipe(
-        map(orders => {
-          if (!orders) {
-            return { preparing: 0, ready: 0, partiallyReady: 0 }
-          }
+    this.stateCount$ = this._orderService.kOrders$.pipe(
+      map((orders) => {
+        if (!orders) {
+          return { preparing: 0, ready: 0, partiallyReady: 0 };
+        }
 
-          const ready = orders.filter(order => order.estado === "Listo").length;
-          const preparing = orders.filter(order => order.estado === "En Preparacion").length;
-          const partiallyReady = orders.filter(order => order.estado === "Parcialmente Listo").length;
+        const ready = orders.filter((order) => order.estado === 'Listo').length;
+        const preparing = orders.filter(
+          (order) => order.estado === 'En Preparacion',
+        ).length;
+        const partiallyReady = orders.filter(
+          (order) => order.estado === 'Parcialmente Listo',
+        ).length;
 
-          return { ready, preparing, partiallyReady }
-        })
-      );
+        return { ready, preparing, partiallyReady };
+      }),
+    );
   }
 
   changeStateItem(idItem: number): void {
-    this._itemService.ChangeStateItem(idItem)
-      .subscribe(() => {
-        this._orderService.GetKitcherOrders("All");
+    this._itemService.ChangeStateItem(idItem).subscribe(() => {
+      this._orderService.GetKitcherOrders('All');
 
-        // NOTE: Actualizamos la lista de pedidos para mozo para que se muestren los
-        // nuevos estados.
-        this._orderWService.GetOrdersWaiter();
-      });
+      // NOTE: Actualizamos la lista de pedidos para mozo para que se muestren los
+      // nuevos estados.
+
+      this._orderWService.GetOrdersWaiter();
+    });
   }
 
   getAll() {
@@ -72,41 +75,41 @@ export class OrdersComponent implements OnInit {
   getPreparing() {
     // this._orderService.GetKitcherOrders("En Preparacion");
     this.filterOrders$ = this.KOrders$.pipe(
-      map(x => {
+      map((x) => {
         if (!x) {
           return null;
         }
-        return x.filter(x => x.estado == "En Preparacion")
-      })
-    )
+        return x.filter((x) => x.estado == 'En Preparacion');
+      }),
+    );
   }
 
   getListo() {
-    this.filterOrders$ = this.KOrders$.pipe(map(x => {
-      if (!x) {
-        return null;
-      }
-      return x.filter(x => x.estado == "Listo")
-    })
-    )
+    this.filterOrders$ = this.KOrders$.pipe(
+      map((x) => {
+        if (!x) {
+          return null;
+        }
+        return x.filter((x) => x.estado == 'Listo');
+      }),
+    );
   }
 
   getParcialmenteListo() {
     // this._orderService.GetKitcherOrders("Listo");
-    this.filterOrders$ = this.KOrders$.pipe(map(x => {
-      if (!x) {
-        return null;
-      }
-      return x.filter(x => x.estado == "Parcialmente Listo")
-    })
-    )
-
+    this.filterOrders$ = this.KOrders$.pipe(
+      map((x) => {
+        if (!x) {
+          return null;
+        }
+        return x.filter((x) => x.estado == 'Parcialmente Listo');
+      }),
+    );
   }
-
 
   cancelOrder(idOrder: number): void {
     this._orderService.CancelOrder(idOrder).subscribe(() => {
-      this._orderService.GetKitcherOrders("All");
-    })
+      this._orderService.GetKitcherOrders('All');
+    });
   }
 }

@@ -33,7 +33,7 @@
            <span class="nombre">{{item.nombreProducto}}</span>
           </div>
           <div>
-          @if(item.estado === "Listo" || item.estado == "Servido"){
+          @if(item.estado === "Listo" || item.estado === "Servido"){
              <span class="status-badge pending">{{item.estado}}</span>
             }@else{
              <span class="status-badge pending" (click)="changeStateItem(item.id)">{{item.estado}}</span>
